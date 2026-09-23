@@ -1,38 +1,43 @@
 import EmblaCarousel from 'embla-carousel'
+import Accessibility from 'embla-carousel-accessibility'
+import './fake-twig.js'
 
 const viewportNode = document.querySelector('.embla__viewport')
-const liveRegionNode = document.querySelector('.embla__live-region')
-const emblaApi = EmblaCarousel(viewportNode, { loop: true, align: 'start' })
+const containerNode = viewportNode.querySelector('.embla__container')
+// The template repeats the slides for looping; this is the count before repeats.
+const slideCount = Number(containerNode.dataset.slideCount)
+
+const emblaApi = EmblaCarousel(viewportNode, { loop: true, align: 'start' }, [
+  Accessibility({
+    carouselAriaLabel: 'Featured slides',
+    announceChanges: true,
+    // Number clones as the slide they copy, so the count stays at the real total.
+    slideAriaLabel: (_, slideIndex) => `Slide ${(slideIndex % slideCount) + 1} of ${slideCount}`,
+    liveRegionContent: (_, slideIndex) =>
+      `Showing slide ${(slideIndex % slideCount) + 1} of ${slideCount}`,
+    // Buttons and live region sit outside the viewport, in .embla.
+    rootNode: (root) => root.parentElement,
+  }),
+])
 
 const slideNodes = emblaApi.slideNodes()
 
+// reInit rebuilds the plugin, which drops its hold on the buttons and live region.
+function setupAccessibility() {
+  const accessibility = emblaApi.plugins().accessibility
+  accessibility.setupPrevAndNextButtons('.embla__prev', '.embla__next')
+  accessibility.setupLiveRegion('.embla__live-region')
+}
+
 function setFeaturedSlide() {
-  const selected = emblaApi.selectedScrollSnap()
+  const selected = emblaApi.selectedSnap()
   slideNodes.forEach((slide, i) => slide.classList.toggle('is-featured', i === selected))
   emblaApi.reInit()
-  emblaApi.scrollTo(selected, true)
-}
-
-function updateSlidesInView() {
-  const inView = emblaApi.slidesInView()
-  slideNodes.forEach((slide, i) => {
-    const hidden = !inView.includes(i)
-    slide.setAttribute('aria-hidden', hidden ? 'true' : 'false')
-    slide.setAttribute('tabindex', hidden ? '-1' : '0')
-  })
-}
-
-function announceSelectedSlide() {
-  const selected = emblaApi.selectedScrollSnap()
-  liveRegionNode.textContent = `Slide ${selected + 1} of ${slideNodes.length}`
 }
 
 emblaApi.on('select', setFeaturedSlide)
-emblaApi.on('select', announceSelectedSlide)
-emblaApi.on('slidesInView', updateSlidesInView)
-emblaApi.on('reInit', updateSlidesInView)
+emblaApi.on('reinit', setupAccessibility)
 setFeaturedSlide()
-updateSlidesInView()
 
-document.querySelector('.embla__prev').addEventListener('click', () => emblaApi.scrollPrev())
-document.querySelector('.embla__next').addEventListener('click', () => emblaApi.scrollNext())
+document.querySelector('.embla__prev').addEventListener('click', () => emblaApi.goToPrev())
+document.querySelector('.embla__next').addEventListener('click', () => emblaApi.goToNext())
