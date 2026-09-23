@@ -10,15 +10,17 @@ const slides = [
 ]
 
 // Embla loops by moving real slides, so the slides off screen must fill the
-// viewport on their own. At the 2/9 + 4/9 widths in style.css that needs 6;
+// viewport on their own. At the 2/9 slide width in style.css that needs 6;
 // below that Embla disables loop without warning. Change with the CSS.
 const minLoopSlides = 6
 
 function renderSlide(slide) {
   return `
     <div class="embla__slide">
-      <img class="embla__slide__img" src="${slide.image.url}" alt="${slide.image.alt}" />
-      <h2 class="embla__slide__heading"><a href="${slide.url}">${slide.title}</a></h2>
+      <div class="embla__slide__inner">
+        <img class="embla__slide__img" src="${slide.image.url}" alt="${slide.image.alt}" />
+        <h2 class="embla__slide__heading"><a href="${slide.url}">${slide.title}</a></h2>
+      </div>
     </div>`
 }
 
@@ -32,4 +34,6 @@ function renderCarousel() {
   return `<div class="embla__container" data-slide-count="${slides.length}">${html}</div>`
 }
 
-document.querySelector('.embla__viewport').innerHTML = renderCarousel()
+document.querySelectorAll('.embla__viewport').forEach((node) => {
+  node.innerHTML = renderCarousel()
+})

@@ -6,10 +6,18 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="embla">
-    <div class="embla__viewport" id="embla-viewport"></div>
-    <button class="embla__prev" type="button" aria-controls="embla-viewport">Prev</button>
-    <button class="embla__next" type="button" aria-controls="embla-viewport">Next</button>
+  <h1 class="demo-heading">With tween</h1>
+  <div class="embla" data-label="With tween">
+    <div class="embla__viewport" id="embla-tween"></div>
+    <button class="embla__prev" type="button" aria-controls="embla-tween">Prev</button>
+    <button class="embla__next" type="button" aria-controls="embla-tween">Next</button>
+    <div class="embla__live-region"></div>
+  </div>
+  <h1 class="demo-heading">Without tween</h1>
+  <div class="embla embla--no-tween" data-label="Without tween">
+    <div class="embla__viewport" id="embla-no-tween"></div>
+    <button class="embla__prev" type="button" aria-controls="embla-no-tween">Prev</button>
+    <button class="embla__next" type="button" aria-controls="embla-no-tween">Next</button>
     <div class="embla__live-region"></div>
   </div>
   <script type="module" src="main.js"></script>
