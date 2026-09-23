@@ -7,7 +7,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "embla-carousel": "^8.5.1"
+    "embla-carousel": "9.0.0-rc03",
+    "embla-carousel-accessibility": "9.0.0-rc03"
   },
   "devDependencies": {
     "vite": "^5.4.0"
